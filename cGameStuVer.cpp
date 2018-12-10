@@ -74,7 +74,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	{
 		theFontMgr->addFont(fontList[fonts], fontsToUse[fonts], 36);
 	}
-	gameTextList = { "Jim the Electrician", "Run into the turtles", "Use the arrow keys to move.", "Thanks for playing!", "See you again soon!", "Score ", "", "High Score" };
+	gameTextList = { "Jim the Electrician", "Run into the turtles", "Use the arrow keys to move", "Thanks for playing", "See you again soon", "Score ", "", "High Score" };
 	
 	
 	theTextureMgr->addTexture("Title", theFontMgr->getFont("Arcade")->createTextTexture(theRenderer, gameTextList[0], textType::solid, { 0, 255, 0, 255 }, { 0, 0, 0, 0 }));
@@ -158,7 +158,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 
 void cGame::run(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 {
-	bool loop = true;
+	//bool loop = true;
 
 	while (loop)
 	{
@@ -167,11 +167,11 @@ void cGame::run(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 
 		loop = this->getInput(loop);
 		this->update(elapsedTime);
-		this->render(theSDLWND, theRenderer, loop);
+		this->render(theSDLWND, theRenderer);
 	}
 }
 
-void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer, bool loop)
+void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 {
 	SDL_RenderClear(theRenderer);
 	switch (theGameState)
@@ -203,12 +203,6 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer, bool loop)
 	break;
 	case gameState::playing:
 	{
-		
-
-
-	
-
-
 		//spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());
 		// Renders the line of bricks at the bottom of the screen through an array
 		tempTexture = theTextureMgr->getTexture("Brick");
@@ -289,10 +283,10 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer, bool loop)
 	case gameState::end:
 	{
 		
-		theTextureMgr->addTexture("theScore", theFontMgr->getFont("Arcade")->createTextTexture(theRenderer, strScore.c_str(), textType::solid, { 0, 255, 0, 255 }, { 0, 0, 0, 0 }));
-		theButtonMgr->getBtn("play_btn")->setSpritePos({ 500, 375 });
+		
+		theButtonMgr->getBtn("play_btn")->setSpritePos({ 250, 375 });
 		theButtonMgr->getBtn("play_btn")->render(theRenderer, &theButtonMgr->getBtn("play_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("play_btn")->getSpritePos(), theButtonMgr->getBtn("play_btn")->getSpriteScale());
-		theButtonMgr->getBtn("menu_btn")->setSpritePos({ 500, 425 });
+		theButtonMgr->getBtn("menu_btn")->setSpritePos({ 250, 425 });
 		theButtonMgr->getBtn("menu_btn")->render(theRenderer, &theButtonMgr->getBtn("menu_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("menu_btn")->getSpritePos(), theButtonMgr->getBtn("menu_btn")->getSpriteScale());
 	}
 	break;
@@ -346,14 +340,11 @@ void cGame::update()
 
 void cGame::update(double deltaTime)
 {
-	if (theGameState == gameState::menu || theGameState == gameState::end)
+	if (theGameState == gameState::menu || theGameState == gameState::highscore)
 	{
 		theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, gameState::quit, theAreaClicked);
 	}
-	else
-	{
-		theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, gameState::end, theAreaClicked);
-	}
+	
 	if (theGameState == gameState::highscore)
 	{
 		
@@ -364,23 +355,37 @@ void cGame::update(double deltaTime)
 	if (theGameState == gameState::menu)
 	{
 		theGameState = theButtonMgr->getBtn("play_btn")->update(theGameState, gameState::playing, theAreaClicked);
+		theGameState = theButtonMgr->getBtn("hs_btn")->update(theGameState, gameState::highscore, theAreaClicked);
+		if (theGameState == gameState::playing && gameOver == false)
+		{
+			theScore = 0;
+			enemyNum = 0;
+			thePlayer.setSpritePos({ 32, 615 });
+
+		}
 		gameOver = false;
-		
+		theAreaClicked = { 0,0 };
 	}
 
-	theGameState = theButtonMgr->getBtn("menu_btn")->update(theGameState, gameState::menu, theAreaClicked);
-	theGameState = theButtonMgr->getBtn("hs_btn")->update(theGameState, gameState::highscore, theAreaClicked);
-	
+	//theGameState = theButtonMgr->getBtn("menu_btn")->update(theGameState, gameState::menu, theAreaClicked);
+
 	if (theGameState == gameState::end)
 	{
+		cout << (int)theGameState << " " << enemyNum << endl;
 		theGameState = theButtonMgr->getBtn("play_btn")->update(theGameState, gameState::playing, theAreaClicked);
 		theGameState = theButtonMgr->getBtn("menu_btn")->update(theGameState, gameState::menu, theAreaClicked);
-		gameOver = false;
+		if (theGameState == gameState::playing && gameOver == true)
+		{
+			gameOver = false;
+			thePlayer.setSpritePos({ 32, 615 });
+			enemyNum = 0;
+		}
+		theAreaClicked = { 0,0 };
 	}
 	
 	if (theGameState == gameState::playing)
 	{
-		
+		theAreaClicked = { 0,0 };
 		/* Let the computer pick a random number */
 		random_device rd;    // non-deterministic engine 
 		mt19937 gen{ rd() }; // deterministic engine. For most common uses, std::mersenne_twister_engine, fast and high-quality.
@@ -389,38 +394,39 @@ void cGame::update(double deltaTime)
 		uniform_int_distribution<> EnemyTextDis2{ 11, 12 };
 		uniform_int_distribution<> EnemyVelocity{ 200, 300 };
 
-		if (enemyNum == 0)
-		{
-
-			for (int enem = 0; enem < 3; enem++)
+		if (theScore < 1000) {
+			if (enemyNum == 0)
 			{
-				theEnemies.push_back(new cEnemy);
-				theEnemies[enem]->setSpritePos({ 904, 68 });
-				theEnemies[enem]->setSpriteTranslation({ 100, -50 });
-				int randEnemy = EnemyTextDis(gen);
-				theEnemies[enem]->setTexture(theTextureMgr->getTexture(textureName[randEnemy]));
-				theEnemies[enem]->setSpriteDimensions(theTextureMgr->getTexture(textureName[randEnemy])->getTWidth(), theTextureMgr->getTexture(textureName[randEnemy])->getTHeight());
-				theEnemies[enem]->setEnemyVelocity(EnemyVelocity(gen));
-				theEnemies[enem]->setActive(true);
-				enemyNum++;
-			}
 
-			for (int enem = theEnemies.size(); enem < 6; enem++)
-			{
-				theEnemies.push_back(new cEnemy);
-				theEnemies[enem]->setSpritePos({ 32, 68 });
-				theEnemies[enem]->setSpriteTranslation({ 100, -50 });
-				int randEnemy = EnemyTextDis2(gen);
-				theEnemies[enem]->setTexture(theTextureMgr->getTexture(textureName[randEnemy]));
-				theEnemies[enem]->setSpriteDimensions(theTextureMgr->getTexture(textureName[randEnemy])->getTWidth(), theTextureMgr->getTexture(textureName[randEnemy])->getTHeight());
-				theEnemies[enem]->setEnemyVelocity(-EnemyVelocity(gen));
-				theEnemies[enem]->setActive(true);
-				enemyNum++;
-			}
+				for (int enem = 0; enem < 3; enem++)
+				{
+					theEnemies.push_back(new cEnemy);
+					theEnemies[enem]->setSpritePos({ 904, 68 });
+					theEnemies[enem]->setSpriteTranslation({ 100, -50 });
+					int randEnemy = EnemyTextDis(gen);
+					theEnemies[enem]->setTexture(theTextureMgr->getTexture(textureName[randEnemy]));
+					theEnemies[enem]->setSpriteDimensions(theTextureMgr->getTexture(textureName[randEnemy])->getTWidth(), theTextureMgr->getTexture(textureName[randEnemy])->getTHeight());
+					theEnemies[enem]->setEnemyVelocity(EnemyVelocity(gen));
+					theEnemies[enem]->setActive(true);
+					enemyNum++;
+				}
 
-			
+				for (int enem = theEnemies.size(); enem < 6; enem++)
+				{
+					theEnemies.push_back(new cEnemy);
+					theEnemies[enem]->setSpritePos({ 32, 68 });
+					theEnemies[enem]->setSpriteTranslation({ 100, -50 });
+					int randEnemy = EnemyTextDis2(gen);
+					theEnemies[enem]->setTexture(theTextureMgr->getTexture(textureName[randEnemy]));
+					theEnemies[enem]->setSpriteDimensions(theTextureMgr->getTexture(textureName[randEnemy])->getTWidth(), theTextureMgr->getTexture(textureName[randEnemy])->getTHeight());
+					theEnemies[enem]->setEnemyVelocity(-EnemyVelocity(gen));
+					theEnemies[enem]->setActive(true);
+					enemyNum++;
+				}
+
+
+			}
 		}
-
 		for (vector<cEnemy*>::iterator enemyIterator = theEnemies.begin(); enemyIterator != theEnemies.end(); ++enemyIterator)
 		{
 			if ((*enemyIterator)->collidedWith(&(*enemyIterator)->getBoundingRect(), &thePlayer.getBoundingRect()))
@@ -494,18 +500,15 @@ void cGame::update(double deltaTime)
 
 		if (theScore == 1000)
 		{
-			gameOver = true;
-		}
-
-		if (gameOver)
-		{
 			theGameState = gameState::end;
 		}
 
+
 		
 	}
-	if (loop = false)
+	if (loop == false)
 	{
+		//theGameState == gameState::quit;
 		SDL_Quit();
 	}
 }
@@ -528,7 +531,7 @@ bool cGame::getInput(bool theLoop)
 				{
 					case SDL_BUTTON_LEFT:
 					{
-						if (theGameState == gameState::menu || theGameState == gameState::highscore) 
+						if (theGameState == gameState::menu || theGameState == gameState::highscore || theGameState == gameState::end) 
 						{
 							theAreaClicked = { event.motion.x, event.motion.y };
 						}
@@ -587,14 +590,14 @@ bool cGame::getInput(bool theLoop)
 						thePlayer.setTexture(theTextureMgr->getTexture("Jim"));
 						thePlayer.setSpriteDimensions(theTextureMgr->getTexture("Jim")->getTWidth(), theTextureMgr->getTexture("Jim")->getTHeight());
 						thePlayer.setPlayerMove(1);
-						if (thePlayer.getSpriteRotAngle() == 5)
+						/*if (thePlayer.getSpriteRotAngle() == 5)
 						{
 							thePlayer.setSpriteRotAngle(thePlayer.getSpriteRotAngle() - 10);
 						}
 						else if (thePlayer.getSpriteRotAngle() == -5)
 						{
 							thePlayer.setSpriteRotAngle(thePlayer.getSpriteRotAngle() + 10);
-						}
+						}*/
 					}
 				}
 				break;
@@ -607,14 +610,14 @@ bool cGame::getInput(bool theLoop)
 						thePlayer.setTexture(theTextureMgr->getTexture("JimL"));
 						thePlayer.setSpriteDimensions(theTextureMgr->getTexture("JimL")->getTWidth(), theTextureMgr->getTexture("JimL")->getTHeight());
 						thePlayer.setPlayerMove(-1);
-						if (thePlayer.getSpriteRotAngle() == 5)
+						/*if (thePlayer.getSpriteRotAngle() == 5)
 						{
 							thePlayer.setSpriteRotAngle(thePlayer.getSpriteRotAngle() - 10);
 						}
 						else if (thePlayer.getSpriteRotAngle() == -5)
 						{
 							thePlayer.setSpriteRotAngle(thePlayer.getSpriteRotAngle() + 10);
-						}
+						}*/
 					}
 				}
 				break;

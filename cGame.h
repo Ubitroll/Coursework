@@ -23,7 +23,7 @@ public:
 	void initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer);
 	void run(SDL_Window* theSDLWND, SDL_Renderer* theRenderer);
 	void cleanUp(SDL_Window* theSDLWND);
-	void render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer, bool loop);
+	void render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer);
 	void render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer, double rotAngle, SDL_Point* spriteCentre);
 	void update();
 	void update(double deltaTime);
@@ -87,7 +87,7 @@ private:
 	vector<SDL_Point> btnPos;
 	vector <cButton> theButtons;
 	cTexture* tempTextTexture;
-	bool loop;
+	bool loop = true;
 	int enemyNum = 0;
 };
 
