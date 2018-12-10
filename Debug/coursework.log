@@ -1,0 +1,37 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Lab7Asteroids.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  cGameStuVer.cpp
+  coursework.vcxproj -> E:\ProgrammingCourswork\coursework\Debug\coursework.exe
+  copying SDL2.dll to debug directory
+  File not found - *.*
+  0 File(s) copied
+  0 File(s) copied
+  E:\ProgrammingCourswork\coursework\coursework\Audio\DeathSound.m4a
+  E:\ProgrammingCourswork\coursework\coursework\Audio\Theme.mp3
+  2 File(s) copied
+  E:\ProgrammingCourswork\coursework\coursework\Fonts\Class.TTF
+  E:\ProgrammingCourswork\coursework\coursework\Fonts\digital-7.ttf
+  E:\ProgrammingCourswork\coursework\coursework\Fonts\space age.ttf
+  3 File(s) copied
+  E:\ProgrammingCourswork\coursework\coursework\Data\HighScore.dat
+  1 File(s) copied
+  SDL2\SDL2-2.0.4\lib\x86\SDL2.dll
+  1 File(s) copied
+  SDL2\SDL2_image-2.0.1\lib\x86\libjpeg-9.dll
+  SDL2\SDL2_image-2.0.1\lib\x86\libpng16-16.dll
+  SDL2\SDL2_image-2.0.1\lib\x86\libtiff-5.dll
+  SDL2\SDL2_image-2.0.1\lib\x86\libwebp-4.dll
+  SDL2\SDL2_image-2.0.1\lib\x86\SDL2_image.dll
+  SDL2\SDL2_image-2.0.1\lib\x86\zlib1.dll
+  6 File(s) copied
+  SDL2\SDL2_ttf-2.0.14\lib\x86\libfreetype-6.dll
+  SDL2\SDL2_ttf-2.0.14\lib\x86\SDL2_ttf.dll
+  SDL2\SDL2_ttf-2.0.14\lib\x86\zlib1.dll
+  3 File(s) copied
+  SDL2\SDL2_mixer-2.0.1\lib\x86\libFLAC-8.dll
+  SDL2\SDL2_mixer-2.0.1\lib\x86\libmodplug-1.dll
+  SDL2\SDL2_mixer-2.0.1\lib\x86\libogg-0.dll
+  SDL2\SDL2_mixer-2.0.1\lib\x86\libvorbis-0.dll
+  SDL2\SDL2_mixer-2.0.1\lib\x86\libvorbisfile-3.dll
+  SDL2\SDL2_mixer-2.0.1\lib\x86\SDL2_mixer.dll
+  SDL2\SDL2_mixer-2.0.1\lib\x86\smpeg2.dll
+  7 File(s) copied
