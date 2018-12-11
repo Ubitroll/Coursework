@@ -34,6 +34,7 @@ public:
 	bool saveToFile(string highScoreFile);
 
 	int  addItem(Item entry);
+	int  addItem(string name, int score);
 	Item getItem(int row);
 	void clearTable();
 	string convertToString();

@@ -263,6 +263,16 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
 
 		// Render updated score value
+		if (theScore == 0)
+		{
+
+			theScore = 0;
+			theTextureMgr->deleteTexture("theScore");
+			strScore = gameTextList[5];
+			strScore += to_string(theScore).c_str();
+			theTextureMgr->addTexture("theScore", theFontMgr->getFont("Arcade")->createTextTexture(theRenderer, strScore.c_str(), textType::solid, { 0, 255, 0, 255 }, { 0, 0, 0, 0 }));
+
+		}
 		if (enemyNum == 0)
 		{
 
@@ -319,7 +329,8 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	case gameState::quit:
 	{
 		loop = false;
-		
+		theHSTable.addItem("Stephen", theScore);
+		theHSTable.saveToFile("Data/HighScore.dat");
 	}
 	break;
 	default:
@@ -342,6 +353,7 @@ void cGame::update(double deltaTime)
 {
 	if (theGameState == gameState::menu || theGameState == gameState::highscore)
 	{
+		
 		theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, gameState::quit, theAreaClicked);
 	}
 	
@@ -361,9 +373,10 @@ void cGame::update(double deltaTime)
 			theScore = 0;
 			enemyNum = 0;
 			thePlayer.setSpritePos({ 32, 615 });
+			gameOver = false;
 
 		}
-		gameOver = false;
+		
 		theAreaClicked = { 0,0 };
 	}
 
@@ -371,20 +384,23 @@ void cGame::update(double deltaTime)
 
 	if (theGameState == gameState::end)
 	{
-		cout << (int)theGameState << " " << enemyNum << endl;
+		theButtonMgr->getBtn("play_btn")->setClicked(false);
 		theGameState = theButtonMgr->getBtn("play_btn")->update(theGameState, gameState::playing, theAreaClicked);
 		theGameState = theButtonMgr->getBtn("menu_btn")->update(theGameState, gameState::menu, theAreaClicked);
+
 		if (theGameState == gameState::playing && gameOver == true)
 		{
 			gameOver = false;
 			thePlayer.setSpritePos({ 32, 615 });
 			enemyNum = 0;
+			theScore = 0;
 		}
 		theAreaClicked = { 0,0 };
 	}
 	
 	if (theGameState == gameState::playing)
 	{
+		theButtonMgr->getBtn("play_btn")->setClicked(false);
 		theAreaClicked = { 0,0 };
 		/* Let the computer pick a random number */
 		random_device rd;    // non-deterministic engine 
@@ -501,6 +517,7 @@ void cGame::update(double deltaTime)
 		if (theScore == 1000)
 		{
 			theGameState = gameState::end;
+			gameOver = true;
 		}
 
 

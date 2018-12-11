@@ -85,6 +85,27 @@ int  cHighScoreTable::addItem(Item entry)
 	}
 }
 
+int cHighScoreTable::addItem(string name, int score)
+{
+	int row = this->tableEntries.size();
+
+	if (row == this->MAX_SIZE)
+	{
+		cout << "Table full" << endl;
+		this->tableSize = row;
+		return row;
+	}
+	else
+	{
+		int index = row;
+		this->tableEntries.push_back(new Item);
+		this->tableEntries[index]->Name = name;
+		this->tableEntries[index]->score = score;
+		sort(this->tableEntries.begin(), this->tableEntries.end());
+		return this->tableEntries.size();
+	}
+}
+
 cHighScoreTable::Item cHighScoreTable::getItem(int row)
 {
 	Item tblItem;
