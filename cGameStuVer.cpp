@@ -52,6 +52,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	theSoundMgr->initMixer();
 	theScore = 0;
 
+	// Set platform coordinates and number of itterations into the platformPos array
 	platformPos[0] = { 32,572, 13 };
 	platformPos[1] = { 675, 572, 13 };
 	platformPos[2] = { 32, 150, 15 };
@@ -74,9 +75,9 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	{
 		theFontMgr->addFont(fontList[fonts], fontsToUse[fonts], 36);
 	}
-	gameTextList = { "Jim the Electrician", "Run into the turtles", "Use the arrow keys to move", "Thanks for playing", "See you again soon", "Score ", "", "High Score" };
 	
 	
+	// create textures for the title and score
 	theTextureMgr->addTexture("Title", theFontMgr->getFont("Arcade")->createTextTexture(theRenderer, gameTextList[0], textType::solid, { 0, 255, 0, 255 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("theScore", theFontMgr->getFont("Arcade")->createTextTexture(theRenderer, strScore.c_str(), textType::solid, { 0, 255, 0, 255 }, { 0, 0, 0, 0 }));
 
@@ -89,6 +90,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		theSoundMgr->add(soundList[sounds], soundsToUse[sounds], soundTypes[sounds]);
 	}
 	// Create text Textures
+	gameTextList = { "Jim the Electrician", "Run into the turtles", "Use the arrow keys to move", "Thanks for playing", "See you again soon", "Score ", "", "High Score" };
 	gameTextNames = { "TitleTxt", "CollectTxt", "InstructTxt", "ThanksTxt", "SeeYouTxt","ScoreTxt","HSTable","HScore" };
 	for (unsigned int text = 0; text < gameTextNames.size(); text++)
 	{
@@ -124,16 +126,16 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 
 	
 	
-
+	// Code to spawn single itteration of an enemy for testing purposes
 	/*theEnemy.setSpritePos({ 132, 150 });
 	theEnemy.setTexture(theTextureMgr->getTexture("shell1"));
 	theEnemy.setSpriteDimensions(theTextureMgr->getTexture("shell1")->getTWidth(), theTextureMgr->getTexture("shell1")->getTHeight());
 	theEnemy.setEnemyVelocity(100);
 	theEnemy.setSpriteTranslation({ 50,50 });*/
-	// Create vector array of textures
+	
 
 
-
+	// High score stuff
 	numTableItems = 0;
 	theHSTable.loadFromFile("Data/HighScore.dat");
 
@@ -148,11 +150,15 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		entry += theHSTable.getItem(item).Name + " " + to_string(theHSTable.getItem(item).score);
 		theTextureMgr->addTexture(highScoreTextures[item], theFontMgr->getFont("Arcade")->createTextTexture(theRenderer, entry.c_str(), textType::solid, { 44, 203, 112, 255 }, { 0, 0, 0, 0 }));
 	}
+
+	// Spawn Player and set everything up.
 	thePlayer.setSpritePos({ 32, 615 });
 	thePlayer.setTexture(theTextureMgr->getTexture("Jim"));
 	thePlayer.setSpriteDimensions(theTextureMgr->getTexture("Jim")->getTWidth(), theTextureMgr->getTexture("Jim")->getTHeight());
 	thePlayer.setPlayerVelocity(100);
 	thePlayer.setSpriteTranslation({ 50,50 });
+
+	// sets gameover to false
 	gameOver = false;
 }
 
@@ -178,9 +184,6 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	{
 	case gameState::menu:
 	{
-		/*spriteBkgd.setTexture(theTextureMgr->getTexture("OpeningScreen"));
-		spriteBkgd.setSpriteDimensions(theTextureMgr->getTexture("OpeningScreen")->getTWidth(), theTextureMgr->getTexture("OpeningScreen")->getTHeight());
-		spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());*/
 		// Render the Title
 		tempTextTexture = theTextureMgr->getTexture("TitleTxt");
 		pos = { 10, 10, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
@@ -203,7 +206,6 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	break;
 	case gameState::playing:
 	{
-		//spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());
 		// Renders the line of bricks at the bottom of the screen through an array
 		tempTexture = theTextureMgr->getTexture("Brick");
 		pos = { 32, 700, tempTexture->getTextureRect().w, tempTexture->getTextureRect().h };
@@ -241,16 +243,6 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		scale = { 1, 1 };
 		tempTexture->renderTexture(theRenderer, tempTexture->getTexture(), &tempTexture->getTextureRect(), &pos, scale);
 
-		// Render each bullet in the vector array
-		/*for (int draw = 0; draw < (int)theBullets.size(); draw++)
-		{
-			theBullets[draw]->render(theRenderer, &theBullets[draw]->getSpriteDimensions(), &theBullets[draw]->getSpritePos(), theBullets[draw]->getSpriteRotAngle(), &theBullets[draw]->getSpriteCentre(), theBullets[draw]->getSpriteScale());
-		}*/
-		// Render each explosion in the vector array
-		/*for (int draw = 0; draw < (int)theExplosions.size(); draw++)
-		{
-			theExplosions[draw]->render(theRenderer, &theExplosions[draw]->getSourceRect(), &theExplosions[draw]->getSpritePos(), theExplosions[draw]->getSpriteScale());
-		}*/
 		// Render each enemy in the vector array
 		for (int draw = 0; draw < (int)theEnemies.size(); draw++)
 		{

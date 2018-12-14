@@ -20,11 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="asteroidsGame.h" />
+    <ClInclude Include="cBkGround.h" />
     <ClInclude Include="cButton.h" />
     <ClInclude Include="cButtonMgr.h" />
     <ClInclude Include="cEnemy.h" />
-    <ClInclude Include="cBkGround.h" />
-    <ClInclude Include="cBullet.h" />
     <ClInclude Include="cFont.h" />
     <ClInclude Include="cFontMgr.h" />
     <ClInclude Include="cGame.h" />
@@ -40,11 +39,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AsteroidsSDL.cpp" />
+    <ClCompile Include="cBkGround.cpp" />
     <ClCompile Include="cButton.cpp" />
     <ClCompile Include="cButtonMgr.cpp" />
     <ClCompile Include="cEnemy.cpp" />
-    <ClCompile Include="cBkGround.cpp" />
-    <ClCompile Include="cBulletStuVer.cpp" />
     <ClCompile Include="cFont.cpp" />
     <ClCompile Include="cFontMgr.cpp" />
     <ClCompile Include="cGameStuVer.cpp" />
