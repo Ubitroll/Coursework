@@ -84,7 +84,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	// Load game sounds
 	soundList = { "theme", "death" };
 	soundTypes = { soundType::music, soundType::sfx};
-	soundsToUse = { "Audio/Theme.mp3g", "Audio/DeathSound.m4a"};
+	soundsToUse = { "Audio/Theme.mp3", "Audio/DeathSound.m4a"};
 	for (int sounds = 0; sounds < (int)soundList.size(); sounds++)
 	{
 		theSoundMgr->add(soundList[sounds], soundsToUse[sounds], soundTypes[sounds]);
