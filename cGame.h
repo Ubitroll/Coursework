@@ -44,11 +44,13 @@ private:
 	cSprite spriteBkgd;
 	cPlayer thePlayer;
 	cEnemy theEnemy;
+	cBullet theBullet;
 	// game related variables
 	vector<LPCSTR> textureName;
 	vector<LPCSTR> textName;
 	vector<LPCSTR> texturesToUse;
 	vector<cEnemy*> theEnemies;
+	vector<cBullet*> theBullets;
 	vector<cSprite*> theExplosions;
 	// Fonts to use
 	vector<LPCSTR> fontList;

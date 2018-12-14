@@ -32,6 +32,7 @@ void cPlayer::update(double deltaTime)
 
 	SDL_Rect currentSpritePos = this->getSpritePos();
 
+	// If walking move in desired direvtion
 	if (walk == true)
 	{
 		currentSpritePos.x += (int)(this->playerVelocity * 1 * this->move * 0.05);
@@ -43,6 +44,7 @@ void cPlayer::update(double deltaTime)
 		for (int fall = 1; fall > 0; fall = fall - 0.1)
 		{
 			currentSpritePos.y -= (int)(this->playerVelocity * 1 * 1);
+			// If walking is also true allow movement while falling and jumping
 			if (walk == true)
 			{
 				currentSpritePos.x += (int)(this->playerVelocity * 1 * this->move * 0.01);
@@ -51,16 +53,17 @@ void cPlayer::update(double deltaTime)
 		jump = false;
 	}
 
-	//	if not touching collider AND not jumping
-	//{
+	// Origional Psuedocode for gravity system
+	// if not touching collider AND not jumping
+	// {
 	//	currentSpritePos.y += (int)(this->rocketVelocity * 1 * 0.02);
-	//}
+	// }
 	if (fall == true && jump == false)
 	{
 		currentSpritePos.y += (int)(this->playerVelocity * 1 * 0.01);
 	}
 	
-
+	// Set sprite pos and a bounding rect
 	this->setSpritePos({ currentSpritePos.x , currentSpritePos.y  });
 	this->setBoundingRect(this->getSpritePos());
 

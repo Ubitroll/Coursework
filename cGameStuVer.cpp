@@ -75,7 +75,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	{
 		theFontMgr->addFont(fontList[fonts], fontsToUse[fonts], 36);
 	}
-	
+	gameTextList = { "Jim the Electrician", "Run into the turtles", "Use the arrow keys to move", "Thanks for playing", "See you again soon", "Score ", "", "High Score" };
 	
 	// create textures for the title and score
 	theTextureMgr->addTexture("Title", theFontMgr->getFont("Arcade")->createTextTexture(theRenderer, gameTextList[0], textType::solid, { 0, 255, 0, 255 }, { 0, 0, 0, 0 }));
@@ -90,7 +90,6 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		theSoundMgr->add(soundList[sounds], soundsToUse[sounds], soundTypes[sounds]);
 	}
 	// Create text Textures
-	gameTextList = { "Jim the Electrician", "Run into the turtles", "Use the arrow keys to move", "Thanks for playing", "See you again soon", "Score ", "", "High Score" };
 	gameTextNames = { "TitleTxt", "CollectTxt", "InstructTxt", "ThanksTxt", "SeeYouTxt","ScoreTxt","HSTable","HScore" };
 	for (unsigned int text = 0; text < gameTextNames.size(); text++)
 	{
@@ -248,13 +247,14 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		{
 			theEnemies[draw]->render(theRenderer, &theEnemies[draw]->getSpriteDimensions(), &theEnemies[draw]->getSpritePos(), theEnemies[draw]->getSpriteRotAngle(), &theEnemies[draw]->getSpriteCentre(), theEnemies[draw]->getSpriteScale());
 		}
+
 		// Render the Title
 		cTexture* tempTextTexture = theTextureMgr->getTexture("Title");
 		SDL_Rect pos = { 32, 10, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
 		FPoint scale = { 1, 1 };
 		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
 
-		// Render updated score value
+		// Render score value and only updates score when the number of enemies is equal to 0
 		if (theScore == 0)
 		{
 
@@ -284,8 +284,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	break;
 	case gameState::end:
 	{
-		
-		
+		// Render's buttons on end screen
 		theButtonMgr->getBtn("play_btn")->setSpritePos({ 250, 375 });
 		theButtonMgr->getBtn("play_btn")->render(theRenderer, &theButtonMgr->getBtn("play_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("play_btn")->getSpritePos(), theButtonMgr->getBtn("play_btn")->getSpriteScale());
 		theButtonMgr->getBtn("menu_btn")->setSpritePos({ 250, 425 });
@@ -302,6 +301,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
 		pos = { 220, 200, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
 
+		// rebder high score
 		for (int item = 0; item < theHSTableSize; item++)
 		{
 			tempTextTexture = theTextureMgr->getTexture(highScoreTextures[item]);
@@ -320,6 +320,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	break;
 	case gameState::quit:
 	{
+		// Sets the game to quit and saves the score to the highscore file
 		loop = false;
 		theHSTable.addItem("Stephen", theScore);
 		theHSTable.saveToFile("Data/HighScore.dat");
@@ -343,23 +344,25 @@ void cGame::update()
 
 void cGame::update(double deltaTime)
 {
+	// If on the menu or highscore exit button will quit
 	if (theGameState == gameState::menu || theGameState == gameState::highscore)
 	{
 		
 		theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, gameState::quit, theAreaClicked);
 	}
-	
+	// If in highscore the play and menu buttons wil take you to the game and menu respectivly
 	if (theGameState == gameState::highscore)
 	{
 		
 		theGameState = theButtonMgr->getBtn("play_btn")->update(theGameState, gameState::playing, theAreaClicked);
 		theGameState = theButtonMgr->getBtn("menu_btn")->update(theGameState, gameState::menu, theAreaClicked);
 	}
-
+	// In the meny the play and highscore button will take you to the game and highcore screen respectivly
 	if (theGameState == gameState::menu)
 	{
 		theGameState = theButtonMgr->getBtn("play_btn")->update(theGameState, gameState::playing, theAreaClicked);
 		theGameState = theButtonMgr->getBtn("hs_btn")->update(theGameState, gameState::highscore, theAreaClicked);
+		// If the game has been plyed through reset the gamme variabes
 		if (theGameState == gameState::playing && gameOver == false)
 		{
 			theScore = 0;
@@ -368,18 +371,18 @@ void cGame::update(double deltaTime)
 			gameOver = false;
 
 		}
-		
+		// set the area clicked to 0,0 to avoid a button being clicked when not wanted
 		theAreaClicked = { 0,0 };
 	}
 
-	//theGameState = theButtonMgr->getBtn("menu_btn")->update(theGameState, gameState::menu, theAreaClicked);
-
+	// if gamestate is end play and menu button will take you to their respective screens.
 	if (theGameState == gameState::end)
 	{
 		theButtonMgr->getBtn("play_btn")->setClicked(false);
 		theGameState = theButtonMgr->getBtn("play_btn")->update(theGameState, gameState::playing, theAreaClicked);
 		theGameState = theButtonMgr->getBtn("menu_btn")->update(theGameState, gameState::menu, theAreaClicked);
 
+		// reset game variables if play is pressed
 		if (theGameState == gameState::playing && gameOver == true)
 		{
 			gameOver = false;
@@ -387,9 +390,10 @@ void cGame::update(double deltaTime)
 			enemyNum = 0;
 			theScore = 0;
 		}
+		// set the area clicked to 0,0 to avoid a button being clicked when not wanted
 		theAreaClicked = { 0,0 };
 	}
-	
+	// if game state is playing 
 	if (theGameState == gameState::playing)
 	{
 		theButtonMgr->getBtn("play_btn")->setClicked(false);
@@ -402,10 +406,14 @@ void cGame::update(double deltaTime)
 		uniform_int_distribution<> EnemyTextDis2{ 11, 12 };
 		uniform_int_distribution<> EnemyVelocity{ 200, 300 };
 
-		if (theScore < 1000) {
+		// Spawns new wave of enemies only if the score hasn't reached the win point and there are no enemies on the screen
+		// If score hasn't reach win condition
+		if (theScore < 1000) 
+		{
+			// If no enemies on screen
 			if (enemyNum == 0)
 			{
-
+				// Spawn enemies that are traveling  to the right
 				for (int enem = 0; enem < 3; enem++)
 				{
 					theEnemies.push_back(new cEnemy);
@@ -418,7 +426,7 @@ void cGame::update(double deltaTime)
 					theEnemies[enem]->setActive(true);
 					enemyNum++;
 				}
-
+				// Spawn enemies that are traveling to the left
 				for (int enem = theEnemies.size(); enem < 6; enem++)
 				{
 					theEnemies.push_back(new cEnemy);
@@ -431,10 +439,9 @@ void cGame::update(double deltaTime)
 					theEnemies[enem]->setActive(true);
 					enemyNum++;
 				}
-
-
 			}
 		}
+		// Enemy iterator
 		for (vector<cEnemy*>::iterator enemyIterator = theEnemies.begin(); enemyIterator != theEnemies.end(); ++enemyIterator)
 		{
 			if ((*enemyIterator)->collidedWith(&(*enemyIterator)->getBoundingRect(), &thePlayer.getBoundingRect()))
@@ -444,11 +451,9 @@ void cGame::update(double deltaTime)
 
 				theSoundMgr->getSnd("death")->play(0);
 
-				// Lab 7 code goes here
-					
-					enemyNum--;
+				// Reduce the number of enemies on the screen
+				enemyNum--;
 			}
-
 		}
 		// Update the visibility and position of each enemy
 		vector<cEnemy*>::iterator enemyIterator = theEnemies.begin();
@@ -464,9 +469,12 @@ void cGame::update(double deltaTime)
 				++enemyIterator;
 			}
 		}
-		// Update the Rockets position
+		// Update the player position
 		thePlayer.update(deltaTime);
+		// For use of single enemy iteration
 		//theEnemy.update(deltaTime, platformPos);
+		
+		// Chcecks to see if player has landed on a platform
 		int p = 0;
 		while (!found && p < 7)
 		{
@@ -474,16 +482,19 @@ void cGame::update(double deltaTime)
 			{
 				if (platformPos[p].y == thePlayer.getSpritePos().y + 84)
 				{
+					// Stops the player from falling as they have landed on a platform
 					thePlayer.setPlayerFalling(false);
 					found = true;
 				}
 				else
 				{
+					// The player must be falling
 					thePlayer.setPlayerFalling(true);
 				}
 			}
 			p++;
 		}
+		// If the player lands on the bottom bricks stop them from falling
 		if (thePlayer.getSpritePos().y == 616)
 		{
 			thePlayer.setPlayerFalling(false);
@@ -492,29 +503,31 @@ void cGame::update(double deltaTime)
 		{
 			found = false;
 		}
+
+		// Create SDL points to teleport the player to for the far right and far left of the screen
 		SDL_Point farRight = { WINDOW_WIDTH - 90, thePlayer.getSpritePos().y };
-
 		SDL_Point farLeft = { 32, thePlayer.getSpritePos().y };
-
-
+		
+		// IF the player walks off the left side of the screen
 		if (thePlayer.getSpritePos().x < 32)
 		{
+			// Teleport them to the right of the screen
 			thePlayer.setSpritePos(farRight);
 		}
+		// Else if the player walks off the right of the screen
 		else if (thePlayer.getSpritePos().x > (WINDOW_WIDTH - 90))
 		{
+			// Teleport the player to the left of the screen
 			thePlayer.setSpritePos(farLeft);
 		}
-
+		// If the score reaches 1000 player wins and gameover is called
 		if (theScore == 1000)
 		{
 			theGameState = gameState::end;
 			gameOver = true;
 		}
-
-
-		
 	}
+	// If loop is false quit game
 	if (loop == false)
 	{
 		//theGameState == gameState::quit;
@@ -540,6 +553,7 @@ bool cGame::getInput(bool theLoop)
 				{
 					case SDL_BUTTON_LEFT:
 					{
+						// If in a gamestate that you can use the mouse allow left click to inout an area clicked
 						if (theGameState == gameState::menu || theGameState == gameState::highscore || theGameState == gameState::end) 
 						{
 							theAreaClicked = { event.motion.x, event.motion.y };
@@ -581,9 +595,10 @@ bool cGame::getInput(bool theLoop)
 
 				case SDLK_UP:
 				{
+					// If in the gamestate playing 
 					if (theGameState == gameState::playing) 
 					{
-						// When space is pressed make the player jump
+						// When space is pressed make the player jump if they aren't jumping already
 						if (thePlayer.getPlayerJumping() == false)
 						{
 							thePlayer.setPlayerJumping(true);
@@ -593,12 +608,15 @@ bool cGame::getInput(bool theLoop)
 				break;
 				case SDLK_RIGHT:
 				{
+					// If in the gamestate playing 
 					if (theGameState == gameState::playing)
 					{
+						// make player walk
 						thePlayer.setPlayerWalking(true);
 						thePlayer.setTexture(theTextureMgr->getTexture("Jim"));
 						thePlayer.setSpriteDimensions(theTextureMgr->getTexture("Jim")->getTWidth(), theTextureMgr->getTexture("Jim")->getTHeight());
 						thePlayer.setPlayerMove(1);
+						// Unused code to add animation of the player moving back and forth as they run
 						/*if (thePlayer.getSpriteRotAngle() == 5)
 						{
 							thePlayer.setSpriteRotAngle(thePlayer.getSpriteRotAngle() - 10);
@@ -613,12 +631,15 @@ bool cGame::getInput(bool theLoop)
 				
 				case SDLK_LEFT:
 				{
+					// If in the gamestate playing 
 					if (theGameState == gameState::playing)
 					{
+						// make player walk
 						thePlayer.setPlayerWalking(true);
 						thePlayer.setTexture(theTextureMgr->getTexture("JimL"));
 						thePlayer.setSpriteDimensions(theTextureMgr->getTexture("JimL")->getTWidth(), theTextureMgr->getTexture("JimL")->getTHeight());
 						thePlayer.setPlayerMove(-1);
+						// Unused code to add animation of the player moving back and forth as they run
 						/*if (thePlayer.getSpriteRotAngle() == 5)
 						{
 							thePlayer.setSpriteRotAngle(thePlayer.getSpriteRotAngle() - 10);
@@ -669,6 +690,7 @@ bool cGame::getInput(bool theLoop)
 					}
 				}
 				break;
+				// When the space key is lifted stop jumping
 				case SDLK_SPACE:
 				{
 					thePlayer.setPlayerJumping(false);

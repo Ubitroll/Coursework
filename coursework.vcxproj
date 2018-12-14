@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="asteroidsGame.h" />
     <ClInclude Include="cBkGround.h" />
+    <ClInclude Include="cBullet.h" />
     <ClInclude Include="cButton.h" />
     <ClInclude Include="cButtonMgr.h" />
     <ClInclude Include="cEnemy.h" />
@@ -40,6 +41,7 @@
   <ItemGroup>
     <ClCompile Include="AsteroidsSDL.cpp" />
     <ClCompile Include="cBkGround.cpp" />
+    <ClCompile Include="cBulletStuVer.cpp" />
     <ClCompile Include="cButton.cpp" />
     <ClCompile Include="cButtonMgr.cpp" />
     <ClCompile Include="cEnemy.cpp" />
@@ -54,9 +56,6 @@
     <ClCompile Include="cSprite.cpp" />
     <ClCompile Include="cTexture.cpp" />
     <ClCompile Include="cTextureMgr.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

@@ -9,6 +9,7 @@
 #include "cTexture.h"
 #include "cEnemy.h"
 #include "cFontMgr.h"
+#include "cBullet.h"
 #include "cSoundMgr.h"
 #include "cPlayer.h" //Renamed to cPlayer in the solution explorer
 #include "cButton.h"

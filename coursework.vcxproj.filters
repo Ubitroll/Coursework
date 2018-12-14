@@ -66,6 +66,9 @@
     <ClInclude Include="cBkGround.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cBullet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AsteroidsSDL.cpp">
@@ -116,8 +119,8 @@
     <ClCompile Include="cBkGround.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
+    <ClCompile Include="cBulletStuVer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
