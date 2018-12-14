@@ -616,15 +616,6 @@ bool cGame::getInput(bool theLoop)
 						thePlayer.setTexture(theTextureMgr->getTexture("Jim"));
 						thePlayer.setSpriteDimensions(theTextureMgr->getTexture("Jim")->getTWidth(), theTextureMgr->getTexture("Jim")->getTHeight());
 						thePlayer.setPlayerMove(1);
-						// Unused code to add animation of the player moving back and forth as they run
-						/*if (thePlayer.getSpriteRotAngle() == 5)
-						{
-							thePlayer.setSpriteRotAngle(thePlayer.getSpriteRotAngle() - 10);
-						}
-						else if (thePlayer.getSpriteRotAngle() == -5)
-						{
-							thePlayer.setSpriteRotAngle(thePlayer.getSpriteRotAngle() + 10);
-						}*/
 					}
 				}
 				break;
@@ -639,15 +630,6 @@ bool cGame::getInput(bool theLoop)
 						thePlayer.setTexture(theTextureMgr->getTexture("JimL"));
 						thePlayer.setSpriteDimensions(theTextureMgr->getTexture("JimL")->getTWidth(), theTextureMgr->getTexture("JimL")->getTHeight());
 						thePlayer.setPlayerMove(-1);
-						// Unused code to add animation of the player moving back and forth as they run
-						/*if (thePlayer.getSpriteRotAngle() == 5)
-						{
-							thePlayer.setSpriteRotAngle(thePlayer.getSpriteRotAngle() - 10);
-						}
-						else if (thePlayer.getSpriteRotAngle() == -5)
-						{
-							thePlayer.setSpriteRotAngle(thePlayer.getSpriteRotAngle() + 10);
-						}*/
 					}
 				}
 				break;

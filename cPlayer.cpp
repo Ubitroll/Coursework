@@ -88,16 +88,16 @@ int cPlayer::getPlayerVelocity()
 }
 /*
 =================================================================
-Sets the move value for the rocket
+Sets the move value for the player
 =================================================================
 */
-void cPlayer::setPlayerMove(int rocketMove)
+void cPlayer::setPlayerMove(int playerMove)
 {
-	move = rocketMove;
+	move = playerMove;
 }
 /*
 =================================================================
-Sets the rocket move value
+Sets the player move value
 =================================================================
 */
 int cPlayer::getPlayerMove()
